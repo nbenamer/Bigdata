@@ -1,0 +1,51 @@
+services:
+  hdfs:
+    image: apache/hadoop:3.4.3
+    platform: linux/amd64
+    container_name: bce-hdfs
+    hostname: hdfs
+    user: root
+    restart: unless-stopped
+
+    ports:
+      - "9870:9870"
+      - "9864:9864"
+      - "9000:9000"
+
+    volumes:
+      - hdfs_namenode:/data/name
+      - hdfs_datanode:/data/data
+      - ./docker/hadoop/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./docker/hadoop/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+
+        mkdir -p /data/name /data/data
+
+        if [ ! -d /data/name/current ]; then
+          echo "Formatage initial du NameNode..."
+          hdfs namenode -format -force -nonInteractive
+        fi
+
+        echo "Démarrage du NameNode..."
+        hdfs namenode &
+
+        sleep 5
+
+        echo "Démarrage du DataNode..."
+        exec hdfs datanode
+
+    healthcheck:
+      test: ["CMD-SHELL", "hdfs dfsadmin -report >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+volumes:
+  hdfs_namenode:
+  hdfs_datanode:
