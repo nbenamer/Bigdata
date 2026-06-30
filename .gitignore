@@ -1,0 +1,42 @@
+# Environnement Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Données brutes et fichiers volumineux
+data/
+*.csv
+*.parquet
+*.orc
+*.avro
+*.pdf
+*.zip
+
+# Secrets et variables d'environnement
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs et fichiers temporaires
+logs/
+*.log
+tmp/
+temp/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code
+.vscode/
